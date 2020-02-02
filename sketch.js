@@ -19,11 +19,10 @@ function def() {
     maxIm = 2;
     minIm = -2;
     minReal = -2;
-    maxDepth = 40;
+    maxDepth = 150;
 }
 
-function setup() {
-    def();
+function init_color(){
     let maxi = 8;
     let maxj = 8;
     let maxk = 4;
@@ -34,6 +33,23 @@ function setup() {
                 colors.push(color(floor((255 / maxi) * i), floor((255 / maxj) * j), floor((255 / maxk) * k)));
             }
         }
+    }
+}
+
+function setup() {
+    def();
+    init_color();
+    button_redraw = document.getElementById("redraw_btn");
+    selected_maxit = document.getElementsByName("maxiter")[0];
+    button_redraw.onclick = () => {
+        maxDepth = int(selected_maxit.value);
+        paint(minReal, maxReal, minIm, maxIm);
+    }
+    button_def = document.getElementById("default_btn");
+    button_def.onclick = () => {
+        def();
+        selected_maxit.selectedIndex = 3;
+        paint(minReal, maxReal, minIm, maxIm);
     }
     createCanvas(width, height);
     canvas = createImage(width, height);
@@ -77,7 +93,7 @@ function paint(minValueReal, maxValueReal, minValueIm, maxValueIm) {
 function getCoords(value, maxval) {
     if (value > maxval) {
         return maxval;
-    } else if (value < 0){
+    } else if (value < 0) {
         return 0;
     }
     return value;

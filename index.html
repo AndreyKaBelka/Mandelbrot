@@ -1,24 +1,43 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="en,ru">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mandelbrot set</title>
-    <style>
-        body {
-            padding: 0;
-            margin: 0;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
     <script src="sketch.js"></script>
 </head>
 
 <body>
-    <h1>
-        Mandelbrot set
-    </h1>
+    <div id="title">
+        <h1 class="Text">
+            Mandelbrot set
+        </h1>
+    </div>
+    <div class="Values">
+        <div class="nested">
+            Max iteration:
+            <select name="maxiter">
+                <option>40</option>
+                <option>60</option>
+                <option>100</option>
+                <option selected="selected">150</option>
+                <option>300</option>
+                <option>500</option>
+                <option>700</option>
+                <option>1000</option>
+                <option>1500</option>
+                <option>2000</option>
+                <option>3000</option>
+            </select>
+        </div>
+        <div class="nested">
+            <input type="button" id="redraw_btn" value="Redraw!">
+            <input type="button" id="default_btn" value="Default settings!">
+        </div>
+    </div>
 </body>
 
 </html>

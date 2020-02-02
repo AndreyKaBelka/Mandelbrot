@@ -1,0 +1,26 @@
+body{
+    background-color: #fd0;
+}
+
+.Values{
+    background-color: #FFFFFF;
+    position: absolute;
+    right: 10px;
+    border: 4px solid;
+}
+
+#title{
+    text-align: center;
+}
+
+.nested{
+    padding: 0px;
+    margin: 0px;
+    width: auto;
+}
+
+.p5Canvas{
+    border: 4px solid Black;
+    left: 10px;
+    position: absolute;
+}
