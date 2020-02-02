@@ -13,10 +13,19 @@ let maxIm;
 let minIm;
 let maxmap;
 
-function preload() {
-    maxi = 8;
-    maxj = 8;
-    maxk = 4;
+function def() {
+    maxReal = 2;
+    maxIm = 2;
+    minIm = -2;
+    minReal = -2;
+    maxDepth = 40;
+}
+
+function setup() {
+    def();
+    let maxi = 8;
+    let maxj = 8;
+    let maxk = 4;
     maxmap = maxi * maxj * maxk;
     for (let i = 0; i < maxi; i++) {
         for (let j = 0; j < maxj; j++) {
@@ -25,18 +34,6 @@ function preload() {
             }
         }
     }
-}
-
-function def() {
-    maxReal = 2;
-    maxIm = 2;
-    minIm = -2;
-    minReal = -2;
-    maxDepth = 1000;
-}
-
-function setup() {
-    def();
     createCanvas(width, height);
     canvas = createImage(width, height);
     paint(minReal, maxReal, minIm, maxIm);
@@ -50,11 +47,14 @@ function paint(minValueReal, maxValueReal, minValueIm, maxValueIm) {
             let real = map(x, 0, canvas.width, minValueReal, maxValueReal);
             let imagine = map(y, 0, canvas.height, minValueIm, maxValueIm);
             let n = mandel(1, real, imagine, real, imagine);
-            let color_ind = floor(map(n, 1, maxDepth, maxmap-1, 0));
+            let color_ind = int(map(n, 1, maxDepth, maxmap-1, 0));
             let index = (x + y * canvas.height) * 4;
             canvas.pixels[index] = red(colors[color_ind]);
             canvas.pixels[index + 1] = green(colors[color_ind]);
             canvas.pixels[index + 2] = blue(colors[color_ind]);
+            // canvas.pixels[index] = map(n, 1, maxDepth, 255, 0);
+            // canvas.pixels[index + 1] = map(n, 1, maxDepth, 255, 0);
+            // canvas.pixels[index + 2] = map(n, 1, maxDepth, 255, 0);
             canvas.pixels[index + 3] = 255;
         }
     }
@@ -88,12 +88,12 @@ function mouseDragged() {
 function mouseReleased() {
     let temp1 = map(startX, 0, canvas.width, minReal, maxReal);
     let temp2 = map(startX + w, 0, canvas.width, minReal, maxReal);
-    maxReal = (temp1 > temp2) ? temp1 : temp2;
-    minReal = (temp1 < temp2) ? temp1 : temp2;
+    maxReal = max(temp1,temp2);
+    minReal = min(temp1,temp2);
     temp1 = map(startY, 0, canvas.height, minIm, maxIm);
     temp2 = map(startY + h, 0, canvas.height, minIm, maxIm);
-    maxIm = (temp1 > temp2) ? temp1 : temp2;
-    minIm = (temp1 < temp2) ? temp1 : temp2;
+    maxIm = max(temp1,temp2);
+    minIm = min(temp1,temp2);
     paint(minReal, maxReal, minIm, maxIm);
 }
 
