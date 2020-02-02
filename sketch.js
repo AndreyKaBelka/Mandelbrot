@@ -12,6 +12,7 @@ let minReal;
 let maxIm;
 let minIm;
 let maxmap;
+let scheme = 0; //0 - Black\White, 1 - Colored
 
 function def() {
     maxReal = 2;
@@ -39,6 +40,24 @@ function setup() {
     paint(minReal, maxReal, minIm, maxIm);
 }
 
+function colored(index, n) {
+    switch (scheme) {
+        case 0: {
+            canvas.pixels[index] = map(n, 1, maxDepth, 255, 0);
+            canvas.pixels[index + 1] = map(n, 1, maxDepth, 255, 0);
+            canvas.pixels[index + 2] = map(n, 1, maxDepth, 255, 0);
+            break;
+        }
+        case 1: {
+            let color_ind = int(map(n, 1, maxDepth, maxmap - 1, 0));
+            canvas.pixels[index] = red(colors[color_ind]);
+            canvas.pixels[index + 1] = green(colors[color_ind]);
+            canvas.pixels[index + 2] = blue(colors[color_ind]);
+            break;
+        }
+    }
+    canvas.pixels[index + 3] = 255;
+}
 
 function paint(minValueReal, maxValueReal, minValueIm, maxValueIm) {
     canvas.loadPixels();
@@ -47,15 +66,8 @@ function paint(minValueReal, maxValueReal, minValueIm, maxValueIm) {
             let real = map(x, 0, canvas.width, minValueReal, maxValueReal);
             let imagine = map(y, 0, canvas.height, minValueIm, maxValueIm);
             let n = mandel(1, real, imagine, real, imagine);
-            let color_ind = int(map(n, 1, maxDepth, maxmap-1, 0));
             let index = (x + y * canvas.height) * 4;
-            canvas.pixels[index] = red(colors[color_ind]);
-            canvas.pixels[index + 1] = green(colors[color_ind]);
-            canvas.pixels[index + 2] = blue(colors[color_ind]);
-            // canvas.pixels[index] = map(n, 1, maxDepth, 255, 0);
-            // canvas.pixels[index + 1] = map(n, 1, maxDepth, 255, 0);
-            // canvas.pixels[index + 2] = map(n, 1, maxDepth, 255, 0);
-            canvas.pixels[index + 3] = 255;
+            colored(index, n);
         }
     }
     canvas.updatePixels();
@@ -65,36 +77,42 @@ function paint(minValueReal, maxValueReal, minValueIm, maxValueIm) {
 function getCoords(value, maxval) {
     if (value > maxval) {
         return maxval;
-    } else if (value < 0) {
+    } else if (value < 0){
         return 0;
     }
     return value;
 }
 
 function mousePressed() {
-    startX = getCoords(mouseX, canvas.width);
-    startY = getCoords(mouseY, canvas.height);
+    startX = null;
+    startY = null;
+    if (!(mouseX > canvas.width || mouseX < 0)) startX = mouseX;
+    if (!(mouseY > canvas.height || mouseY < 0)) startY = mouseY;
 }
 
 function mouseDragged() {
-    stroke(0);
-    noFill();
-    image(canvas, 0, 0);
-    w = getCoords(mouseX, canvas.width) - startX;
-    h = getCoords(mouseY, canvas.height) - startY;
-    rect(startX, startY, w, h);
+    if (startX && startY) {
+        stroke(0);
+        noFill();
+        image(canvas, 0, 0);
+        w = getCoords(mouseX, canvas.width) - startX;
+        h = getCoords(mouseY, canvas.height) - startY;
+        rect(startX, startY, w, h);
+    }
 }
 
 function mouseReleased() {
-    let temp1 = map(startX, 0, canvas.width, minReal, maxReal);
-    let temp2 = map(startX + w, 0, canvas.width, minReal, maxReal);
-    maxReal = max(temp1,temp2);
-    minReal = min(temp1,temp2);
-    temp1 = map(startY, 0, canvas.height, minIm, maxIm);
-    temp2 = map(startY + h, 0, canvas.height, minIm, maxIm);
-    maxIm = max(temp1,temp2);
-    minIm = min(temp1,temp2);
-    paint(minReal, maxReal, minIm, maxIm);
+    if (startX && startY) {
+        let temp1 = map(startX, 0, canvas.width, minReal, maxReal);
+        let temp2 = map(startX + w, 0, canvas.width, minReal, maxReal);
+        maxReal = max(temp1, temp2);
+        minReal = min(temp1, temp2);
+        temp1 = map(startY, 0, canvas.height, minIm, maxIm);
+        temp2 = map(startY + h, 0, canvas.height, minIm, maxIm);
+        maxIm = max(temp1, temp2);
+        minIm = min(temp1, temp2);
+        paint(minReal, maxReal, minIm, maxIm);
+    }
 }
 
 function mandel(depth, real, imagine, c_real, c_imagine) {
